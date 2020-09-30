@@ -5,22 +5,23 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-dir_root="/home/$USER/www"
-dir_conf="/etc/apache2/sites-available"
+ROOT_DIR=$(eval echo ~${SUDO_USER})"/www"
+CONF_DIR="/etc/apache2/sites-available"
 
 # Ask user to give name of virtual host
 
-read -p 'Input Domain: ' domain
+read -p 'Input Domain: ' DOMAIN
 
-echo Create Virtual Host Folder at ${dir_root}
+echo Create Virtual Host Folder at ${ROOT_DIR}
 
 # Create folder root for virtual host
 
-mkdir -m 777 ${dir_root}/${domain}
+mkdir -pm 777 ${ROOT_DIR}/${DOMAIN}
+chown ${SUDO_USER}:${SUDO_USER} ${ROOT_DIR}/${DOMAIN}
 
 # Create index.html inside root folder
 
-index_file=${dir_root}/${domain}/index.html
+index_file=${ROOT_DIR}/${DOMAIN}/index.html
 
 cat > ${index_file} << EOF
 <!DOCTYPE html>
@@ -31,7 +32,7 @@ cat > ${index_file} << EOF
     <title>Hay..!!</title>
 </head>
 <body>
-    <h1>Your Virtual Host ${domain} is ready to use</h1>
+    <h1>Your Virtual Host ${DOMAIN} is ready to use</h1>
 </body>
 </html>
 EOF
@@ -40,20 +41,20 @@ EOF
 
 echo Create Virtual Host Config
 
-conf_file=${dir_conf}/${domain}.conf 
+CONF_FILE=${CONF_DIR}/${DOMAIN}.conf 
 
-cat > ${conf_file} << EOF
+cat > ${CONF_FILE} << EOF
 
 <VirtualHost *:80>
-        ServerAdmin webmaster@${domain}
-        ServerName ${domain}
-        ServerAlias www.${domain}
-        DocumentRoot ${dir_root}/${domain}
+        ServerAdmin webmaster@${DOMAIN}
+        ServerName ${DOMAIN}
+        ServerAlias www.${DOMAIN}
+        DocumentRoot ${ROOT_DIR}/${DOMAIN}
 
         ErrorLog ${APACHE_LOG_DIR}/error.log
         CustomLog ${APACHE_LOG_DIR}/access.log combined
 
-        <Directory ${dir_root}/${domain}>
+        <Directory ${ROOT_DIR}/${DOMAIN}>
             Options Indexes FollowSymLinks
             AllowOverride All
             Require all granted
@@ -64,14 +65,14 @@ EOF
 
 echo Add Virtual Host url at hosts
 
-sed -i "2i127.0.0.1  ${domain}" /etc/hosts
+sed -i "2i127.0.0.1         ${DOMAIN}" /etc/hosts
 
 echo Adding Virtual Host Configuration into apache service
 
-a2ensite ${domain}.conf
+a2ensite ${DOMAIN}.conf
 
 echo Restart Apache Service
 
-systemctl restart apache2
+service apache2 restart
 
-echo Your Virtual Host $domain is Ready to use
+echo Your Virtual Host $DOMAIN is Ready to use
