@@ -26,6 +26,6 @@ service apache2 restart
 
 rm -rf ${CONF_DIR}/sites-available/${DOMAIN}.conf
 
-sed -i '/${DOMAIN}/d' /etc/hosts
+sed -i "/${DOMAIN}/d" /etc/hosts
 
 echo "${DOMAIN} completely removed from virtual host"
