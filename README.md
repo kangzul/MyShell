@@ -1,18 +1,26 @@
-# SimpleVH
+# MyShell
 
-This is simple script to generate virtual host automatically in linux system
+This is simple script to run some task automatically in linux system
 
 ### System Requirement
 * Linux Distribution (Tested in Linux Mint 19.3)
-* Apache2 Webserver
+* Apache2 Webserver (Create Virtual Host)
+* Rclone
+* DNScrypt
 
-### How To Run
-#### Create Virtual Host
+### Content
+* Sync Local Music to Google Drive (Rclone)
+* Sync Google Drive to Local (Rclone)
+* Run DoH with cloudflare configuration
+* Create Virtual Host
+* Delete Virtual Host 
+
+### How To Use
 * Clone this repo
-* Please disable first 000-default.conf with command `sudo a2dissite 000-default.conf`
-* Create virtual host with command `sudo ./create_vh.sh`
-* Enter domain or name your url address
+* cd to `MyShell`
+* Run this script with command `sudo ./myshell.sh`
+* Select action what you want, type number of option
+* Type required information (if needed)
 
-#### Delete Virtual Host
-* Delete virtual host with command `sudo ./delete_vh.sh`
-* Enter domain thay you want to delete
+###Note
+Please disable first `000-default.conf` with command `sudo a2dissite 000-default.conf`if you want to create Virtual Host
