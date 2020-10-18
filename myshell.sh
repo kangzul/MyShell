@@ -11,6 +11,7 @@ echo '  2. Sync Drive Music to Local'
 echo '  3. Run DoH'
 echo '  4. Create Virtual Host (Apache)'
 echo '  5. Delete Virtual Host (Apache)'
+echo '  6. Enable root without password (MariaDB)'
 echo '  #. More Action Will be add here'
 
 read -p 'Input your action : ' ACTION
@@ -90,6 +91,13 @@ case ${ACTION} in
         sed -i "/${DOMAIN}/d" /etc/hosts
         echo "${DOMAIN} completely removed from virtual host"
         ;;
+    6)
+        mysql -u root
+        SELECT User,Host FROM mysql.user;
+        DROP USER 'root'@'localhost';
+        CREATE USER 'root'@'%' IDENTIFIED BY '';
+        GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+        FLUSH PRIVILEGES;
     *)
         echo I don\'t know the option
         ;;
